@@ -1,0 +1,13 @@
+# Python environment
+venv/
+__pycache__/
+*.pyc
+
+# Security (Secrets)
+.env
+
+# Database (Local)
+db.sqlite3
+
+# OS related
+.DS_Store
