@@ -22,15 +22,19 @@ def s3_test_view(request):
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def register_user(request):
-    username = request.data.get('username')
-    email = request.data.get('email')
-    password = request.data.get('password')
-    
-    if User.objects.filter(username=username).exists():
-        return Response({"error": "Username already exists"}, status=status.HTTP_400_BAD_REQUEST)
-    
-    user = User.objects.create_user(username=username, email=email, password=password)
-    return Response({"message": "User created successfully"}, status=status.HTTP_201_CREATED)
+    try:
+        username = request.data.get('username')
+        email = request.data.get('email')
+        password = request.data.get('password')
+
+        if User.objects.filter(username=username).exists():
+            return Response({"error": "Username already exists"}, status=status.HTTP_400_BAD_REQUEST)
+
+        user = User.objects.create_user(username=username, email=email, password=password)
+        return Response({"message": "User created successfully"}, status=status.HTTP_201_CREATED)
+    except Exception as e:
+        print(e) 
+        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class ResumeUploadView(APIView):
     parser_classes = (MultiPartParser, FormParser)
@@ -45,8 +49,6 @@ class ResumeUploadView(APIView):
         if serializer.is_valid():
             file_obj = serializer.validated_data['file']
             file_name = file_obj.name
-
-            # 1. File ko memory mein copy karna taaki "Closed File" error na aaye
             file_content = file_obj.read()
             file_copy = io.BytesIO(file_content)
             file_obj.seek(0)
@@ -57,7 +59,6 @@ class ResumeUploadView(APIView):
             if not success:
                 return Response({"error": "S3 Upload Failed"}, status=500)
 
-            # 3. REAL TEXT EXTRACTION (Using the memory copy)
             extracted_text = ""
             try:
                 pdf_reader = PyPDF2.PdfReader(file_copy)
@@ -71,7 +72,6 @@ class ResumeUploadView(APIView):
             if not extracted_text.strip():
                 return Response({"error": "PDF mein text nahi mila!"}, status=400)
 
-            # 4. ANALYSIS LOGIC
             analyzer = FutureFitAnalyzer(extracted_text)
             result = analyzer.get_readiness_score()
 

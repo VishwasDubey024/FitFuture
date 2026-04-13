@@ -13,12 +13,11 @@ const SignupPage = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      // Backend par user create karne ka endpoint (Abhi hum ise banayenge)
       await axios.post('http://127.0.0.1:8000/api/register/', formData);
-      alert("Account ban gaya! Ab login karo.");
+      alert("Account Created.");
       navigate('/login');
     } catch (err) {
-      alert("Error: Username pehle se hai ya data galat hai.");
+      alert("Error: Failed to create account.");
     } finally {
       setLoading(false);
     }

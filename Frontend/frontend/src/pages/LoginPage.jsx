@@ -21,7 +21,7 @@ const LoginPage = () => {
       localStorage.setItem('refresh_token', response.data.refresh);
       navigate('/dashboard');
     } catch (err) {
-      setError('Invalid credentials. Bhai, check karke firse try karo.');
+      setError('Invalid credentials. Please try again.');
     } finally {
       setLoading(false);
     }

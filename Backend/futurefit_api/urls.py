@@ -16,10 +16,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from core.views import s3_test_view, ResumeUploadView
+from core.views import s3_test_view, ResumeUploadView , register_user
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('api/register/', register_user, name='register'), 
     path('admin/', admin.site.urls),
     path('test-s3/', s3_test_view),
     path('api/upload/', ResumeUploadView.as_view(), name='resume-upload'),
