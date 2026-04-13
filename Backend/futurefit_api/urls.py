@@ -18,6 +18,7 @@ from django.contrib import admin
 from django.urls import path
 from core.views import s3_test_view, ResumeUploadView , register_user
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from core.views import get_user_details
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -27,5 +28,6 @@ urlpatterns = [
     path('api/upload/', ResumeUploadView.as_view(), name='resume-upload'),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('api/user/', get_user_details, name='get_user_details'),
 ]
 
